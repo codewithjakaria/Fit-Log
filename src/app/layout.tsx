@@ -8,11 +8,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {/* Navbar সব পেজে উপরে দেখাবে */}
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-black">
         <Navbar />
-
-        {/* প্রতিটা পেজের কনটেন্ট এখানে আসবে */}
         {children}
       </body>
     </html>

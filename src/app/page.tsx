@@ -1,7 +1,9 @@
+import Hero from '@/components/home/Hero';
+
 export default function Home() {
   return (
-    <main>
-      <h1>Workouts</h1>
+    <main className="min-h-screen bg-black">
+      <Hero />
     </main>
   );
 }
