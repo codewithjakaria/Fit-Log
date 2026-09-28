@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowDown } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -21,19 +22,21 @@ export default function Hero() {
 
           <Link
             href="#library"
-            className="font-oswald mt-8 inline-block rounded-lg bg-[#CCFF00] px-6 py-3 text-sm font-bold uppercase text-black transition hover:opacity-90"
+            className="font-oswald mt-8 inline-flex items-center gap-2 rounded-lg bg-[#CCFF00] px-6 py-3 text-sm font-bold uppercase text-black transition hover:opacity-90"
           >
             Browse Workouts
+            <ArrowDown size={18} />
           </Link>
         </div>
-        <div className="relative h-[220px] w-full md:h-[220px] md:w-1/2">
+
+        <div className="relative h-[260px] w-full md:h-[340px] md:w-1/2">
           <Image
             src="/assets/banner.png"
             alt="Muscle anatomy on a gym machine"
             fill
             priority
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="scale-150 object-contain"
+            className="scale-125 object-contain"
           />
         </div>
       </div>
