@@ -1,11 +1,23 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  const isWorkoutsPage = pathname === '/' || pathname.startsWith('/workouts');
+  const isPlanPage = pathname === '/my-plan';
+
+  const activeStyle =
+    'rounded-full bg-[#1B2410] px-4 py-2 text-sm font-semibold text-[#CCFF00]';
+  const normalStyle =
+    'rounded-full px-4 py-2 text-sm font-semibold text-gray-400 transition hover:text-[#CCFF00]';
+
   return (
     <nav className="bg-[#0C0D10] px-6 py-5">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between">
-        {/* Logo section */}
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/assets/logo.png"
@@ -18,24 +30,19 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Page links section */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/"
-            className="rounded-full bg-[#1B2410] px-4 py-2 text-sm font-semibold text-[#CCFF00]"
-          >
+          <Link href="/" className={isWorkoutsPage ? activeStyle : normalStyle}>
             Workouts
           </Link>
 
           <Link
             href="/my-plan"
-            className="rounded-full px-4 py-2 text-sm font-semibold text-gray-400 transition hover:text-[#CCFF00]"
+            className={isPlanPage ? activeStyle : normalStyle}
           >
             My Plan
           </Link>
         </div>
 
-        {/* Plan and Saved count section */}
         <div className="flex items-center gap-5">
           <Link href="/my-plan" className="flex items-center gap-2">
             <span className="text-sm text-gray-300">Plan</span>
