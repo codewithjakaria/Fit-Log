@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import type { Workout } from '@/lib/api';
 
@@ -11,23 +11,27 @@ type FitlogContextType = {
   saveForLater: (workout: Workout) => void;
 };
 
+// Create the context. It starts empty until FitlogProvider is used.
 const FitlogContext = createContext<FitlogContextType | null>(null);
 
-export function FitlogProvider({ children }: { children: React.ReactNode }) {
+// Put this provider around the parts of the app that need Fitlog data.
+export function FitlogProvider({ children }: { children: ReactNode }) {
   const [planList, setPlanList] = useState<Workout[]>([]);
   const [savedList, setSavedList] = useState<Workout[]>([]);
 
   function addToPlan(workout: Workout) {
-    const alreadyAdded = planList.some(function (item) {
-      return item.id === workout.id;
-    });
+    const workoutIsAlreadyInPlan = planList.some(
+      planWorkout => planWorkout.id === workout.id,
+    );
 
-    if (alreadyAdded) {
+    if (workoutIsAlreadyInPlan) {
       toast.error("Already in today's plan");
       return;
     }
 
-    if (planList.length >= 5) {
+    const planIsFull = planList.length >= 5;
+
+    if (planIsFull) {
       toast.error('Plan is full. Maximum 5 lifts');
       return;
     }
@@ -37,11 +41,11 @@ export function FitlogProvider({ children }: { children: React.ReactNode }) {
   }
 
   function saveForLater(workout: Workout) {
-    const alreadySaved = savedList.some(function (item) {
-      return item.id === workout.id;
-    });
+    const workoutIsAlreadySaved = savedList.some(
+      savedWorkout => savedWorkout.id === workout.id,
+    );
 
-    if (alreadySaved) {
+    if (workoutIsAlreadySaved) {
       toast.error('Already saved');
       return;
     }
@@ -52,17 +56,23 @@ export function FitlogProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <FitlogContext.Provider
-      value={{ planList, savedList, addToPlan, saveForLater }}
+      value={{
+        planList,
+        savedList,
+        addToPlan,
+        saveForLater,
+      }}
     >
       {children}
     </FitlogContext.Provider>
   );
 }
 
+
 export function useFitlog() {
   const context = useContext(FitlogContext);
 
-  if (!context) {
+  if (context === null) {
     throw new Error('useFitlog must be used inside FitlogProvider');
   }
 

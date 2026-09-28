@@ -7,42 +7,28 @@ import { getWorkoutById, type Workout } from '@/lib/api';
 
 export default function WorkoutDetailsPage() {
   const params = useParams<{ id: string }>();
-  const id = params.id;
-
+  const workoutId = params.id;
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    let isPageOpen = true;
-
     async function loadWorkout() {
       setIsLoading(true);
       setError('');
 
       try {
-        const data = await getWorkoutById(id);
-
-        if (isPageOpen) {
-          setWorkout(data);
-        }
+        const workoutData = await getWorkoutById(workoutId);
+        setWorkout(workoutData);
       } catch {
-        if (isPageOpen) {
-          setError('Could not load this workout. Please try again.');
-        }
+        setError('Could not load this workout. Please try again.');
       } finally {
-        if (isPageOpen) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     }
 
     loadWorkout();
-
-    return () => {
-      isPageOpen = false;
-    };
-  }, [id]);
+  }, [workoutId]);
 
   if (isLoading) {
     return (
@@ -53,8 +39,7 @@ export default function WorkoutDetailsPage() {
       </main>
     );
   }
-
-  if (error || !workout) {
+  if (error || workout === null) {
     return (
       <main className="min-h-screen bg-[#0C0D10] text-white">
         <section className="mx-auto max-w-7xl px-6 py-12">
@@ -67,7 +52,6 @@ export default function WorkoutDetailsPage() {
       </main>
     );
   }
-
   return (
     <main className="min-h-screen bg-[#0C0D10] text-white">
       <section className="mx-auto max-w-7xl px-6 py-8 md:py-12">
@@ -108,16 +92,16 @@ export default function WorkoutDetailsPage() {
             </div>
 
             <div className="mt-6 divide-y divide-[#252830] rounded-lg border border-[#252830] bg-[#15171D] px-4">
-              <DetailRow label="Equipment" value={workout.equipment} />
-              <DetailRow label="Difficulty" value={workout.difficulty} />
-              <DetailRow label="Sets" value={workout.sets} />
-              <DetailRow label="Reps" value={workout.reps} />
-              <DetailRow label="Duration" value={`${workout.duration} min`} />
-              <DetailRow
+              <WorkoutInfo label="Equipment" value={workout.equipment} />
+              <WorkoutInfo label="Difficulty" value={workout.difficulty} />
+              <WorkoutInfo label="Sets" value={workout.sets} />
+              <WorkoutInfo label="Reps" value={workout.reps} />
+              <WorkoutInfo label="Duration" value={`${workout.duration} min`} />
+              <WorkoutInfo
                 label="Calories"
                 value={`${workout.caloriesBurned} kcal`}
               />
-              <DetailRow label="Rating" value={`★ ${workout.rating}`} />
+              <WorkoutInfo label="Rating" value={`★ ${workout.rating}`} />
             </div>
 
             <h2 className="mt-7 text-sm font-bold uppercase tracking-wide">
@@ -135,18 +119,7 @@ export default function WorkoutDetailsPage() {
                 type="button"
                 className="flex items-center gap-2 rounded-md bg-[#CCFF00] px-4 py-2.5 text-sm font-bold text-black transition hover:bg-[#b8e600]"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 16 16"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                >
-                  <rect x="2.25" y="3.5" width="11.5" height="10.25" rx="1.5" />
-                  <path d="M5 2v3M11 2v3M2.5 6.5h11" />
-                  <path d="M8 8.5v4M6 10.5h4" />
-                </svg>
+                <span aria-hidden="true">▦</span>
                 Add to today's plan
               </button>
 
@@ -154,16 +127,7 @@ export default function WorkoutDetailsPage() {
                 type="button"
                 className="flex items-center gap-2 rounded-md border border-[#30343D] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-gray-500 hover:text-white"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 16 16"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path d="M4 2.75h8a.75.75 0 0 1 .75.75v10L8 10.75l-4.75 2.75v-10A.75.75 0 0 1 4 2.75Z" />
-                </svg>
+                <span aria-hidden="true">♧</span>
                 Save for later
               </button>
             </div>
@@ -174,7 +138,7 @@ export default function WorkoutDetailsPage() {
   );
 }
 
-function DetailRow({
+function WorkoutInfo({
   label,
   value,
 }: {
