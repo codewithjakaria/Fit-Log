@@ -1,15 +1,9 @@
+
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  Bookmark,
-  CalendarDays,
-  Clock,
-  Flame,
-  Star,
-} from 'lucide-react';
+import { ArrowLeft, Bookmark, CalendarDays, Star } from 'lucide-react';
 import { useFitlog } from '@/context/FitlogContext';
 import type { Workout } from '@/lib/api';
 
@@ -33,7 +27,7 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-9">
           {/* Workout image */}
-          <div className="relative min-h-[320px] overflow-hidden rounded-2xl border border-[#222630] bg-[#15171D] sm:min-h-[520px]">
+          <div className="relative min-h-[320px] overflow-hidden rounded-xl border border-[#222630] bg-[#15171D] sm:min-h-[520px]">
             <Image
               src={workout.image}
               alt={workout.name}
@@ -44,9 +38,17 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
             />
           </div>
 
-
+          {/* Workout information */}
           <div className="flex flex-col">
-            <div className="flex flex-wrap gap-2">
+            <h1 className="font-oswald text-3xl font-bold uppercase leading-tight sm:text-4xl">
+              {workout.name}
+            </h1>
+
+            <p className="mt-3 text-sm leading-6 text-gray-400">
+              {workout.description}
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
               {workout.muscleGroups.map(group => (
                 <span
                   key={group}
@@ -57,21 +59,13 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
               ))}
             </div>
 
-            <h1 className="font-oswald mt-4 text-4xl font-bold uppercase leading-tight sm:text-5xl">
-              {workout.name}
-            </h1>
-
-            <p className="mt-3 leading-7 text-gray-400">
-              {workout.description}
-            </p>
-
-          
-            <dl className="mt-7 divide-y divide-[#222630] rounded-xl border border-[#222630] bg-[#15171D] px-5">
+            {/* Workout facts */}
+            <dl className="mt-6 divide-y divide-[#222630] rounded-xl border border-[#222630] bg-[#15171D] px-5">
               <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
                 <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Equipment
                 </dt>
-                <dd className="font-medium text-gray-200">
+                <dd className="text-right font-medium text-gray-200">
                   {workout.equipment}
                 </dd>
               </div>
@@ -128,54 +122,41 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
               </div>
             </dl>
 
-        
-            <section className="mt-7">
-              <h2 className="font-oswald text-xl font-bold uppercase tracking-wide">
+            {/* Exercise instructions */}
+            <section className="mt-6">
+              <h2 className="font-oswald text-lg font-bold uppercase tracking-wide">
                 Instructions
               </h2>
 
-              <ol className="mt-3 space-y-3 text-sm leading-6 text-gray-400">
+              <ol className="mt-3 space-y-2 text-sm leading-6 text-gray-400">
                 {workout.instructions.map((instruction, index) => (
                   <li key={index} className="flex gap-3">
-                    <span className="shrink-0 text-[#CCFF00]">
-                      {index + 1}.
-                    </span>
+                    <span className="shrink-0">{index + 1}.</span>
                     <span>{instruction}</span>
                   </li>
                 ))}
               </ol>
             </section>
 
-            {/* Buttons */}
-            <div className="mt-8 flex flex-wrap gap-3">
+            {/* These buttons update the shared Fitlog context. */}
+            <div className="mt-6 flex flex-wrap gap-3">
               <button
+                type="button"
                 onClick={() => addToPlan(workout)}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#CCFF00] px-5 py-3 text-sm font-bold text-black transition hover:bg-[#dfff4b]"
+                className="inline-flex items-center gap-2 rounded-md bg-[#CCFF00] px-4 py-2.5 text-sm font-bold text-black transition hover:bg-[#dfff4b]"
               >
                 <CalendarDays size={16} />
                 Add to today&apos;s plan
               </button>
 
               <button
+                type="button"
                 onClick={() => saveForLater(workout)}
-                className="inline-flex items-center gap-2 rounded-lg border border-[#30343f] px-5 py-3 text-sm font-semibold text-gray-200 transition hover:border-[#CCFF00] hover:text-[#CCFF00]"
+                className="inline-flex items-center gap-2 rounded-md border border-[#30343F] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-gray-500 hover:text-white"
               >
                 <Bookmark size={16} />
                 Save for later
               </button>
-            </div>
-
-            {/* Quick workout summary */}
-            <div className="mt-5 flex gap-5 text-sm text-gray-400">
-              <span className="flex items-center gap-2">
-                <Clock size={15} className="text-[#CCFF00]" />
-                {workout.duration} min
-              </span>
-
-              <span className="flex items-center gap-2">
-                <Flame size={15} className="text-[#CCFF00]" />
-                {workout.caloriesBurned} kcal
-              </span>
             </div>
           </div>
         </div>
