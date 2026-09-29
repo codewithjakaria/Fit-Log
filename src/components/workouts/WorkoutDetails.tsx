@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -7,11 +6,7 @@ import { ArrowLeft, Bookmark, CalendarDays, Star } from 'lucide-react';
 import { useFitlog } from '@/context/FitlogContext';
 import type { Workout } from '@/lib/api';
 
-type WorkoutDetailsProps = {
-  workout: Workout;
-};
-
-export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
+export default function WorkoutDetails({ workout }: { workout: Workout }) {
   const { addToPlan, saveForLater } = useFitlog();
 
   return (
@@ -26,7 +21,6 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
         </Link>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-9">
-          {/* Workout image */}
           <div className="relative min-h-[320px] overflow-hidden rounded-xl border border-[#222630] bg-[#15171D] sm:min-h-[520px]">
             <Image
               src={workout.image}
@@ -38,7 +32,6 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
             />
           </div>
 
-          {/* Workout information */}
           <div className="flex flex-col">
             <h1 className="font-oswald text-3xl font-bold uppercase leading-tight sm:text-4xl">
               {workout.name}
@@ -59,86 +52,77 @@ export default function WorkoutDetails({ workout }: WorkoutDetailsProps) {
               ))}
             </div>
 
-            {/* Workout facts */}
-            <dl className="mt-6 divide-y divide-[#222630] rounded-xl border border-[#222630] bg-[#15171D] px-5">
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <div className="mt-6 rounded-xl border border-[#222630] bg-[#15171D] px-5">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Equipment
-                </dt>
-                <dd className="text-right font-medium text-gray-200">
+                </span>
+                <span className="text-right text-gray-200">
                   {workout.equipment}
-                </dd>
+                </span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Difficulty
-                </dt>
-                <dd className="font-medium text-gray-200">
-                  {workout.difficulty}
-                </dd>
+                </span>
+                <span className="text-gray-200">{workout.difficulty}</span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Sets
-                </dt>
-                <dd className="font-medium text-gray-200">{workout.sets}</dd>
+                </span>
+                <span className="text-gray-200">{workout.sets}</span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Reps
-                </dt>
-                <dd className="font-medium text-gray-200">{workout.reps}</dd>
+                </span>
+                <span className="text-gray-200">{workout.reps}</span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Duration
-                </dt>
-                <dd className="font-medium text-gray-200">
-                  {workout.duration} min
-                </dd>
+                </span>
+                <span className="text-gray-200">{workout.duration} min</span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 border-b border-[#222630] py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Calories
-                </dt>
-                <dd className="font-medium text-gray-200">
+                </span>
+                <span className="text-gray-200">
                   {workout.caloriesBurned} kcal
-                </dd>
+                </span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 py-3.5 text-sm">
-                <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex justify-between gap-4 py-3.5 text-sm">
+                <span className="text-xs font-semibold uppercase text-gray-500">
                   Rating
-                </dt>
-                <dd className="flex items-center gap-1 font-medium text-gray-200">
+                </span>
+                <span className="flex items-center gap-1 text-gray-200">
                   <Star size={14} className="fill-[#CCFF00] text-[#CCFF00]" />
                   {workout.rating}
-                </dd>
+                </span>
               </div>
-            </dl>
+            </div>
 
-            {/* Exercise instructions */}
-            <section className="mt-6">
-              <h2 className="font-oswald text-lg font-bold uppercase tracking-wide">
-                Instructions
-              </h2>
+            <h2 className="font-oswald mt-6 text-lg font-bold uppercase tracking-wide">
+              Instructions
+            </h2>
 
-              <ol className="mt-3 space-y-2 text-sm leading-6 text-gray-400">
-                {workout.instructions.map((instruction, index) => (
-                  <li key={index} className="flex gap-3">
-                    <span className="shrink-0">{index + 1}.</span>
-                    <span>{instruction}</span>
-                  </li>
-                ))}
-              </ol>
-            </section>
+            <ol className="mt-3 space-y-2 text-sm leading-6 text-gray-400">
+              {workout.instructions.map((instruction, index) => (
+                <li key={index} className="flex gap-3">
+                  <span>{index + 1}.</span>
+                  <span>{instruction}</span>
+                </li>
+              ))}
+            </ol>
 
-            {/* These buttons update the shared Fitlog context. */}
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"

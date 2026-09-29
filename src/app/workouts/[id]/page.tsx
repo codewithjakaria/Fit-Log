@@ -4,10 +4,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getWorkoutById, type Workout } from '@/lib/api';
+import { useFitlog } from '@/context/FitlogContext';
 
 export default function WorkoutDetailsPage() {
   const params = useParams<{ id: string }>();
   const workoutId = params.id;
+
+  const { addToPlan, saveForLater } = useFitlog();
+
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,6 +43,7 @@ export default function WorkoutDetailsPage() {
       </main>
     );
   }
+
   if (error || workout === null) {
     return (
       <main className="min-h-screen bg-[#0C0D10] text-white">
@@ -52,6 +57,7 @@ export default function WorkoutDetailsPage() {
       </main>
     );
   }
+
   return (
     <main className="min-h-screen bg-[#0C0D10] text-white">
       <section className="mx-auto max-w-7xl px-6 py-8 md:py-12">
@@ -117,14 +123,16 @@ export default function WorkoutDetailsPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
+                onClick={() => addToPlan(workout)}
                 className="flex items-center gap-2 rounded-md bg-[#CCFF00] px-4 py-2.5 text-sm font-bold text-black transition hover:bg-[#b8e600]"
               >
                 <span aria-hidden="true">▦</span>
-                Add to today's plan
+                Add to today&apos;s plan
               </button>
 
               <button
                 type="button"
+                onClick={() => saveForLater(workout)}
                 className="flex items-center gap-2 rounded-md border border-[#30343D] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-gray-500 hover:text-white"
               >
                 <span aria-hidden="true">♧</span>
