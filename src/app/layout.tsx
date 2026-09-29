@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { FitlogProvider } from '@/context/FitlogContext';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <FitlogProvider>
           <Navbar />
           {children}
+          <Footer />
 
           <Toaster
             position="top-right"
