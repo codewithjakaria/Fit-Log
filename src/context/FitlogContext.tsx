@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import toast from 'react-hot-toast';
 import type { Workout } from '@/lib/api';
 
@@ -8,19 +14,59 @@ interface FitlogContextType {
   planList: Workout[];
   savedList: Workout[];
   completedWorkoutIds: number[];
-
   addToPlan(workout: Workout): void;
   saveForLater(workout: Workout): void;
   markAsDone(id: number): void;
   removeFromPlan(id: number): void;
   removeFromSaved(id: number): void;
 }
+
 const FitlogContext = createContext<FitlogContextType | null>(null);
 
 export function FitlogProvider({ children }: { children: ReactNode }) {
   const [planList, setPlanList] = useState<Workout[]>([]);
   const [savedList, setSavedList] = useState<Workout[]>([]);
   const [completedWorkoutIds, setCompletedWorkoutIds] = useState<number[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedPlan = localStorage.getItem('fitlog-plan-list');
+      const savedWorkouts = localStorage.getItem('fitlog-saved-list');
+      const savedDoneIds = localStorage.getItem('fitlog-completed-ids');
+
+      if (savedPlan) {
+        setPlanList(JSON.parse(savedPlan) as Workout[]);
+      }
+
+      if (savedWorkouts) {
+        setSavedList(JSON.parse(savedWorkouts) as Workout[]);
+      }
+
+      if (savedDoneIds) {
+        setCompletedWorkoutIds(JSON.parse(savedDoneIds) as number[]);
+      }
+    } catch {
+      setPlanList([]);
+      setSavedList([]);
+      setCompletedWorkoutIds([]);
+    }
+
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    localStorage.setItem('fitlog-plan-list', JSON.stringify(planList));
+    localStorage.setItem('fitlog-saved-list', JSON.stringify(savedList));
+    localStorage.setItem(
+      'fitlog-completed-ids',
+      JSON.stringify(completedWorkoutIds),
+    );
+  }, [planList, savedList, completedWorkoutIds, isLoaded]);
 
   function addToPlan(workout: Workout) {
     if (planList.some(item => item.id === workout.id)) {
