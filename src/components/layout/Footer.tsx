@@ -9,11 +9,11 @@ export default function Footer() {
           <Image
             src="/assets/logo.png"
             alt="FitLog logo"
-            width={30}
-            height={30}
+            width={20}
+            height={20}
           />
 
-          <span className="font-oswald text-[30px] font-bold tracking-wide">
+          <span className="font-oswald text-[20px] font-bold tracking-wide">
             FITLOG
           </span>
         </Link>

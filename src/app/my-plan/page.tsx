@@ -19,18 +19,18 @@ export default function MyPlanPage() {
   const [activeTab, setActiveTab] = useState<'plan' | 'saved'>('plan');
   const [sortBy, setSortBy] = useState('duration');
 
-  let totalMinutes = 0;
-  let totalCalories = 0;
-
-  for (const workout of planList) {
-    totalMinutes += workout.duration;
-    totalCalories += workout.caloriesBurned;
-  }
-
   let workoutsToShow = planList;
 
   if (activeTab === 'saved') {
     workoutsToShow = savedList;
+  }
+
+  let totalMinutes = 0;
+  let totalCalories = 0;
+
+  for (const workout of workoutsToShow) {
+    totalMinutes = totalMinutes + workout.duration;
+    totalCalories = totalCalories + workout.caloriesBurned;
   }
 
   const sortedWorkouts = [...workoutsToShow];
@@ -53,30 +53,22 @@ export default function MyPlanPage() {
     });
   }
 
-  function removeWorkout(workoutId: number) {
-    if (activeTab === 'plan') {
-      removeFromPlan(workoutId);
-    } else {
-      removeFromSaved(workoutId);
-    }
-  }
-
   return (
     <main className="min-h-[calc(100vh-76px)] bg-[#0C0D10] px-5 py-8 text-white sm:px-8 sm:py-12">
       <section className="mx-auto max-w-7xl">
         <h1 className="font-oswald text-3xl font-bold uppercase sm:text-4xl">
           My Plan
         </h1>
-
         <p className="mt-2 text-sm text-gray-400">
           Cap of five lifts for today. Finish them, then load more.
         </p>
 
+        {/* Summary for today's plan */}
         <div className="mt-7 grid grid-cols-3 divide-x divide-[#222630] rounded-xl border border-[#222630] bg-[#15171D] px-3 py-6 sm:px-5">
           <div className="px-2 sm:px-5">
             <p className="text-xs text-gray-500">Exercises</p>
             <p className="font-oswald mt-1 text-3xl font-bold text-[#CCFF00]">
-              {planList.length}
+              {workoutsToShow.length}
             </p>
           </div>
 
@@ -95,6 +87,7 @@ export default function MyPlanPage() {
           </div>
         </div>
 
+        {/* Plan tabs and sorting menu */}
         <div className="mt-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="inline-flex w-fit rounded-lg border border-[#222630] bg-[#15171D] p-1">
             <button
@@ -141,13 +134,11 @@ export default function MyPlanPage() {
             <h2 className="font-oswald text-lg font-bold uppercase">
               Nothing here yet
             </h2>
-
             <p className="mt-2 text-xs text-gray-500">
               {activeTab === 'plan'
                 ? 'Browse the library and add a lift to get today moving.'
                 : 'Browse the library and save a lift for later.'}
             </p>
-
             <Link
               href="/#library"
               className="mt-5 rounded-full bg-[#CCFF00] px-5 py-2.5 text-xs font-bold text-black transition hover:bg-[#dfff4b]"
@@ -181,7 +172,6 @@ export default function MyPlanPage() {
                       <h2 className="font-oswald truncate text-base font-bold uppercase transition hover:text-[#CCFF00]">
                         {workout.name}
                       </h2>
-
                       <p className="mt-1 truncate text-xs text-gray-400">
                         {workout.equipment}
                       </p>
@@ -191,12 +181,10 @@ export default function MyPlanPage() {
                           <Clock size={12} className="text-[#CCFF00]" />
                           {workout.duration} min
                         </span>
-
                         <span className="flex items-center gap-1">
                           <Flame size={12} className="text-[#CCFF00]" />
                           {workout.caloriesBurned} kcal
                         </span>
-
                         <span className="flex items-center gap-1">
                           <Star
                             size={12}
@@ -216,7 +204,7 @@ export default function MyPlanPage() {
                       View Details
                     </Link>
 
-                    {activeTab === 'plan' && (
+                    {activeTab === 'plan' ? (
                       <button
                         type="button"
                         onClick={() => markAsDone(workout.id)}
@@ -226,11 +214,17 @@ export default function MyPlanPage() {
                         <Check size={14} />
                         {workoutIsDone ? 'Done' : 'Mark as Done'}
                       </button>
-                    )}
+                    ) : null}
 
                     <button
                       type="button"
-                      onClick={() => removeWorkout(workout.id)}
+                      onClick={() => {
+                        if (activeTab === 'plan') {
+                          removeFromPlan(workout.id);
+                        } else {
+                          removeFromSaved(workout.id);
+                        }
+                      }}
                       aria-label={`Remove ${workout.name}`}
                       className="rounded-full p-2 text-gray-500 transition hover:bg-[#222630] hover:text-white"
                     >
